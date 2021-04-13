@@ -6,7 +6,7 @@ app = Flask(__name__)
 #import sectrets
 #secrets.token_hex(16) (16 is the number of bytes)
 
-app.config['SECRET_KEY'] = '6db1e708c19b8a49912519e306f5967c'
+app.config['SECRET_KEY'] = ''
 
 posts = [
 {
