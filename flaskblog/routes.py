@@ -1,6 +1,18 @@
+<<<<<<< HEAD:flaskblog/routes.py
 from flask import render_template, url_for, redirect, flash
 from flaskblog.forms import RegistrationForm, LoginForm
 from flaskblog.models import User, Post
+=======
+from flask import Flask, render_template, url_for, redirect, flash
+from forms import RegistrationForm, LoginForm
+app = Flask(__name__)
+
+#To make secret key use secrets module
+#import sectrets
+#secrets.token_hex(16) (16 is the number of bytes)
+
+app.config['SECRET_KEY'] = ''
+>>>>>>> d90f76ba8b1872f1a441a7e3f40a0e77bcaf00af:flaskblog.py
 
 posts = [
 {
