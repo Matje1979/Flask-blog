@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
@@ -26,3 +28,9 @@ app.config['SECRET_KEY'] = '6db1e708c19b8a49912519e306f5967c'
 #Configuring database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #/// is the sign for a relative path to current directory in sqlite.
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+#This is necessary to be bellow app in order to avoid circular import, but why do we even need it?
+from flaskblog import routes

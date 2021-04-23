@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="content-section">
-	<form action="" method="POST">
+	<form action="" method="POST" autocomplete="off">
 		{{ form.hidden_tag() }} <!-- in Django > {{ csrf_token }} -->
 		<fieldset class="form-group"></fieldset>
 		<legend class="border-bottom mb-4">Join Today</legend>
@@ -29,7 +29,7 @@
 					{% endfor %}
 				</div>
 			{% else %}
-				{{ form.password(class="form-control form-control-lg")}}
+				{{ form.password(class="form-control form-control-lg", autocomplete="off", type="search")}}
 			{% endif %}
 		</div>
 		<div class="form-check">

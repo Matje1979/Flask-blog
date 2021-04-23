@@ -1,8 +1,5 @@
-#Since db is in the __init__.py file in the flaskblog package, we can import it from flaskblog, not from __main__
-from flaskblog import db
+from __main__ import db
 from datetime import datetime
-from flaskblog import login_manager
-from flask_login import UserMixin
 
 #The problem of circular import may arise.When we run python flaskblog.py in terminal. Terminal recognizes flaskblog as 'main'. So, when it reads the models.py 
 # and encounters flaskblog it is something new, so it goes into flaskblog and reads it line by line, and when it comes to User, it says I don't know what this is.
@@ -21,10 +18,7 @@ Traceback (most recent call last):
 ImportError: cannot import name 'db' from '__main__' (unknown location)"""
 
 #In Django db.Model = models.Model and Column is Charfield?
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -33,7 +27,7 @@ class User(db.Model, UserMixin):
     #The following is not a column in the database, it is just an additional query running in the background - C.Shafer
     #In Django there is no such thing, I think.
     #backref allows us to access author from Post instance, although there is no such field in Post and only connection to user.id.
-    posts = db.relationship('Post', cascade='all,delete', backref='author', lazy=True) #lazy=True just defines that SQLALchemy will load data as necessary in one go -C.Shafer
+    posts = db.relationship('Post', backref='author', lazy=True) #lazy=True just defines that SQLALchemy will load data as necessary in one go -C.Shafer
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
@@ -47,4 +41,3 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"User('{self.title}', '{self.date_posted}')"
-
