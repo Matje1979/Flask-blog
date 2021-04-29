@@ -1,7 +1,8 @@
 #Since db is in the __init__.py file in the flaskblog package, we can import it from flaskblog, not from __main__
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flaskblog import db
 from datetime import datetime
-from flaskblog import login_manager
+from flaskblog import db, login_manager, app
 from flask_login import UserMixin
 
 #The problem of circular import may arise.When we run python flaskblog.py in terminal. Terminal recognizes flaskblog as 'main'. So, when it reads the models.py 
@@ -34,10 +35,26 @@ class User(db.Model, UserMixin):
     #In Django there is no such thing, I think.
     #backref allows us to access author from Post instance, although there is no such field in Post and only connection to user.id.
     posts = db.relationship('Post', cascade='all,delete', backref='author', lazy=True) #lazy=True just defines that SQLALchemy will load data as necessary in one go -C.Shafer
+    
+    #Method for creating secret key for password reset
+    def get_reset_token(self, experies_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], experies_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
-
+    
+    #Method for verifying the token
+    #This is a static method because it does not refer anywhere to self. We need to tell python not to expect it.
+    @staticmethod
+    def verify_reset_token(self):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
+        
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title=db.Column(db.String(100), nullable=False)
